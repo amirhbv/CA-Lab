@@ -6,9 +6,7 @@ module ARM(
 
 	wire flush, is_branch;
     wire[`LEN_ADDRESS - 1:0] branch_address;
-
-	// TODO: Fix initial values
-	wire hazard_detected = 0;
+	wire hazard_detected;
 
     wire[`LEN_ADDRESS - 1:0] IF_pc;
     wire[`LEN_INSTRUCTION - 1:0] IF_instruction;
@@ -172,6 +170,18 @@ module ARM(
 		.memory_data_in(MEM_data_out),
 
 		.wb_data_out(reg_file_wb_data)
+	);
+
+	HazardDetector hazard_detector(
+		.EX_wb_enable(ID_wb_enable),
+		.MEM_wb_enable(EX_wb_enable),
+		.reg_file_src1(ID_reg_file_src1), // Rn
+		.reg_file_src2(ID_reg_file_src2), // Rm
+		.has_two_src(ID_has_two_src),
+		.EX_reg_dest(ID_dest_reg),
+		.MEM_reg_dest(EX_dest_reg),
+
+		.hazard_detected(hazard_detected)
 	);
 
 endmodule
