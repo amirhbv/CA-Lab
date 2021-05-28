@@ -1,19 +1,17 @@
 `include "ISA.v"
 
-module EX_Stage_Reg(
+module MEM_Stage_Reg(
 	input clk, rst,
 
 	input mem_read_in,
-	input mem_write_in,
 	input wb_enable_in,
 	input [`LEN_REG_ADDRESS - 1:0] dest_reg_in,
-	input [`LEN_REGISTER - 1:0] alu_result_in, reg_file_out2_in,
+	input [`LEN_REGISTER - 1:0] alu_result_in, memory_data_in,
 
 	output mem_read_out,
-	output mem_write_out,
 	output wb_enable_out,
 	output [`LEN_REG_ADDRESS - 1:0] dest_reg_out,
-	output [`LEN_REGISTER - 1:0] alu_result_out, reg_file_out2_out
+	output [`LEN_REGISTER - 1:0] alu_result_out, memory_data_out
 );
 
 	Register #(.WORD_LENGTH(1)) mem_read_reg(
@@ -21,13 +19,6 @@ module EX_Stage_Reg(
 		.in(mem_read_in),
 
 		.out(mem_read_out)
-	);
-
-	Register #(.WORD_LENGTH(1)) mem_write_reg(
-		.clk(clk), .rst(rst), .ld(1'b1),
-		.in(mem_write_in),
-
-		.out(mem_write_out)
 	);
 
 	Register #(.WORD_LENGTH(1)) wb_enable_reg(
@@ -53,9 +44,9 @@ module EX_Stage_Reg(
 
 	Register #(.WORD_LENGTH(`LEN_REGISTER)) reg_file_out2_reg(
 		.clk(clk), .rst(rst), .ld(1'b1),
-		.in(reg_file_out2_in),
+		.in(memory_data_in),
 
-		.out(reg_file_out2_out)
+		.out(memory_data_out)
 	);
 
 endmodule

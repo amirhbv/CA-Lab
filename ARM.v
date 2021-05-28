@@ -8,7 +8,7 @@ module ARM(
     wire[`LEN_ADDRESS - 1:0] branch_address;
 
 	// TODO: Fix initial values
-	wire freeze = 0, hazard_detected = 0;
+	wire hazard_detected = 0;
 
     wire[`LEN_ADDRESS - 1:0] IF_pc;
     wire[`LEN_INSTRUCTION - 1:0] IF_instruction;
@@ -17,7 +17,7 @@ module ARM(
 		.clk(clk),
 		.rst(rst),
 		.flush(flush),
-		.freeze(freeze),
+		.freeze(hazard_detected),
 		.is_branch(is_branch),
 		.branch_address(branch_address),
 
@@ -55,7 +55,6 @@ module ARM(
 		.clk(clk),
 		.rst(rst),
 		.flush(flush),
-		.freeze(freeze),
 		.hazard_detected(hazard_detected),
 
 		.pc_in(IF_pc),
@@ -102,7 +101,6 @@ module ARM(
 	EX_Stage_Module EX_stage_module(
 		.clk(clk),
 		.rst(rst),
-		.freeze(freeze),
 
 		.pc_in(ID_pc),
 		.status_reg_in(ID_status_reg),
@@ -131,7 +129,6 @@ module ARM(
 		.branch_address(branch_address)
 	);
 
-
 	StatusRegister status_register(
 		.clk(clk),
 		.rst(rst),
@@ -139,6 +136,42 @@ module ARM(
 		.data_in(status_bits),
 
 		.data_out(status_reg_out)
+	);
+
+
+	wire MEM_mem_read;
+	wire MEM_wb_enable;
+	wire [`LEN_REGISTER - 1:0] MEM_alu_result;
+	wire [`LEN_REG_ADDRESS - 1:0] MEM_dest_reg;
+	wire [`LEN_REGISTER - 1:0] MEM_data_out;
+
+	MEM_Stage_Module MEM_stage_module(
+		.clk(clk),
+		.rst(rst),
+
+		.mem_read_in(EX_mem_read),
+		.mem_write_in(EX_mem_write),
+		.wb_enable_in(EX_wb_enable),
+		.dest_reg_in(EX_dest_reg),
+		.reg_file_out2_in(EX_reg_file_out2),
+		.alu_result_in(EX_alu_result),
+
+		.mem_read_out(MEM_mem_read),
+		.wb_enable_out(MEM_wb_enable),
+		.alu_result_out(MEM_alu_result),
+		.dest_reg_out(MEM_dest_reg),
+		.memory_data_out(MEM_data_out)
+	);
+
+	assign reg_file_wb_en = MEM_wb_enable;
+	assign reg_file_wb_address = MEM_dest_reg;
+
+	WB_Stage_Module WB_stage_module(
+		.mem_read_in(MEM_mem_read),
+		.alu_result_in(MEM_alu_result),
+		.memory_data_in(MEM_data_out),
+
+		.wb_data_out(reg_file_wb_data)
 	);
 
 endmodule

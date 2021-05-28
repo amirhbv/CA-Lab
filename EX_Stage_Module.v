@@ -3,7 +3,6 @@
 module EX_Stage_Module(
 	input clk,
 	input rst,
-	input freeze,
 
 	input [`LEN_ADDRESS - 1:0] pc_in,
 	input [`LEN_STATUS - 1:0] status_reg_in,
@@ -31,7 +30,7 @@ module EX_Stage_Module(
 
 	wire [`LEN_REGISTER - 1:0] inner_alu_result;
 
-    EX_Stage ex_stage(
+    EX_Stage EX_stage(
 	// inputs:
 		.clk(clk),
 		.rst(rst),
@@ -55,11 +54,10 @@ module EX_Stage_Module(
 		.branch_address(branch_address)
 	);
 
-    EX_Stage_Reg ex_stage_reg(
+    EX_Stage_Reg EX_stage_reg(
 	// inputs:
 		.clk(clk),
 		.rst(rst),
-		.freeze(freeze),
 
 		.mem_read_in(mem_read_in),
 		.mem_write_in(mem_write_in),

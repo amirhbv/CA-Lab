@@ -4,7 +4,6 @@ module ID_Stage_Module(
 	input clk,
 	input rst,
 	input flush,
-	input freeze,
 	input hazard_detected,
 
 	input[`LEN_ADDRESS - 1:0] pc_in,
@@ -83,7 +82,6 @@ module ID_Stage_Module(
 		.clk(clk),
 		.rst(rst),
 		.flush(flush),
-		.freeze(freeze),
 
 		.pc_in(pc_in),
 		.status_reg_in(status_reg_in),
