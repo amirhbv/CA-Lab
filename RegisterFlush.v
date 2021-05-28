@@ -1,0 +1,22 @@
+`include "ISA.v"
+
+module RegisterFlush #(parameter WORD_LENGTH = `LEN_ADDRESS) (
+	input clk, rst, ld, flush,
+	input [WORD_LENGTH - 1:0] in,
+
+	output reg [WORD_LENGTH - 1:0] out
+);
+
+	always@(posedge clk, posedge rst) begin
+		if (rst) begin
+			out <= 0;
+		end else if (ld) begin
+			if (flush) begin
+				out <= 0;
+			end else begin
+				out <= in;
+			end
+		end
+	end
+
+endmodule
