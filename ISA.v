@@ -2,6 +2,9 @@
 
 `define LEN_ADDRESS	32
 `define LEN_INSTRUCTION	32
+`define LEN_STATUS 4
+
+`define LEN_SHIFT_OPERAND 12
 `define LEN_SIGNED_IMMEDIATE 24
 
 `define LEN_INSTRUCTION_MEM 8
@@ -10,17 +13,14 @@
 `define SIZE_DATA_MEMORY 512
 `define LEN_DATA_MEMORY 8
 
-`define LEN_SHIFT_OPERAND 12
-`define SHIFT_OPERAND_INDEX 12
-
 `define LEN_REG_ADDRESS 4
 `define LEN_REGISTER 32
 `define SIZE_REGISTER_MEM 16
 
-`define LEN_TYPE 2
-`define TYPE_ARITHMETHIC 2'b00
-`define TYPE_MEMORY 2'b01
-`define TYPE_BRANCH 2'b10
+`define LEN_MODE 2
+`define MODE_ARITHMETHIC 2'b00
+`define MODE_MEMORY 2'b01
+`define MODE_BRANCH 2'b10
 
 // Instruction OpCode
 `define LEN_OPCODE 4
@@ -72,8 +72,6 @@
 `define COND_LE 4'b1101
 `define COND_AL 4'b1110
 
-`define S_ZERO 1'b0
-`define S_ONE 1'b1
 `define ENABLE 1'b1
 `define DISABLE 1'b0
 
