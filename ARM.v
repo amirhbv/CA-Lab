@@ -4,9 +4,11 @@ module ARM(
   input clk, rst
 );
 
+	wire flush, is_branch;
+    wire[`LEN_ADDRESS - 1:0] branch_address;
+
 	// TODO: Fix initial values
-	wire flush = 0, freeze = 0, is_branch = 0, hazard_detected = 0;
-    wire[`LEN_ADDRESS - 1:0] branch_address = 0;
+	wire freeze = 0, hazard_detected = 0;
 
     wire[`LEN_ADDRESS - 1:0] IF_pc;
     wire[`LEN_INSTRUCTION - 1:0] IF_instruction;
@@ -67,8 +69,8 @@ module ARM(
 	// outputs from Reg:
 		.pc_out(ID_pc),
 		.status_reg_out(ID_status_reg),
-		.reg_file_out1(ID_reg_file_out1),
-		.reg_file_out2(ID_reg_file_out2),
+		.reg_file_out1(ID_reg_file_out1), // Rn
+		.reg_file_out2(ID_reg_file_out2), // Rm
 		.signed_immediate_out(ID_signed_immediate),
 		.shift_operand_out(ID_shift_operand),
 		.is_immediate_out(ID_is_immediate),
@@ -86,11 +88,55 @@ module ARM(
 		.has_two_src(ID_has_two_src)
 	);
 
+	assign flush = ID_is_branch;
+	assign is_branch = ID_is_branch;
+
+	wire EX_mem_read;
+	wire EX_mem_write;
+	wire EX_wb_enable;
+	wire [`LEN_REG_ADDRESS - 1:0] EX_dest_reg;
+	wire [`LEN_REGISTER - 1:0] EX_reg_file_out2; // Rm
+	wire [`LEN_REGISTER - 1:0] EX_alu_result;
+	wire [`LEN_STATUS - 1:0] status_bits;
+
+	EX_Stage_Module EX_stage_module(
+		.clk(clk),
+		.rst(rst),
+		.freeze(freeze),
+
+		.pc_in(ID_pc),
+		.status_reg_in(ID_status_reg),
+		.reg_file_out1_in(ID_reg_file_out1), // Rn
+		.reg_file_out2_in(ID_reg_file_out2), // Rm
+		.signed_immediate_in(ID_signed_immediate),
+		.shift_operand_in(ID_shift_operand),
+		.is_immediate_in(ID_is_immediate),
+		.execute_command_in(ID_execute_command),
+		.mem_read_in(ID_mem_read),
+		.mem_write_in(ID_mem_write),
+		.wb_enable_in(ID_wb_enable),
+		.dest_reg_in(ID_dest_reg),
+
+
+	// outputs from Reg:
+		.mem_read_out(EX_mem_read),
+		.mem_write_out(EX_mem_write),
+		.wb_enable_out(EX_wb_enable),
+		.dest_reg_out(EX_dest_reg),
+		.reg_file_out2_out(EX_reg_file_out2),
+		.alu_result_out(EX_alu_result),
+
+	// outputs from Stage:
+		.status_bits(status_bits),
+		.branch_address(branch_address)
+	);
+
+
 	StatusRegister status_register(
 		.clk(clk),
 		.rst(rst),
 		.ld(ID_status_write_enable),
-		.data_in(4'b0), // TODO
+		.data_in(status_bits),
 
 		.data_out(status_reg_out)
 	);
