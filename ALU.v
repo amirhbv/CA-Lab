@@ -9,7 +9,7 @@ module ALU(
 	output [`LEN_STATUS - 1:0] status_bits
 );
 
-	wire cin = status_reg_in[2];
+	wire cin = status_reg_in[1];
 
 	wire c;
 	assign {c, result} =
@@ -18,7 +18,7 @@ module ALU(
 		(command == `EXE_ADD) ? op1 + op2 :
 		(command == `EXE_ADC) ? op1 + op2 + cin :
 		(command == `EXE_SUB) ? op1 - op2 :
-		(command == `EXE_SBC) ? op1 - op2 - cin :
+		(command == `EXE_SBC) ? op1 - op2 - (cin ? 32'b0 : 32'b1) :
 		(command == `EXE_AND) ? op1 & op2 :
 		(command == `EXE_ORR) ? op1 | op2 :
 		(command == `EXE_EOR) ? op1 ^ op2 :

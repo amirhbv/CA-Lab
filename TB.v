@@ -13,7 +13,7 @@ module TB();
 		rst = 1;
 		#19;
 		rst = 0;
-		#2000;
+		#900000;
 		$stop;
 	end
 
