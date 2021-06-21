@@ -29,7 +29,7 @@ module ALU(
 		32'b0;
 
 	wire add_mode = (command == `EXE_ADD) | (command == `EXE_ADC);
-	wire sub_mode = (command == `EXE_SUB) | (command == `EXE_SBC);
+	wire sub_mode = (command == `EXE_SUB) | (command == `EXE_SBC) | (command == `EXE_CMP);
 
 	wire n = (result[31]);
 	wire z = (result == 0);
