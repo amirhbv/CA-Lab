@@ -9,7 +9,7 @@ module ConditionChecker (
 	wire n, z, c, v;
 	assign {n, z, c, v} = status_register;
 
-    always @(condition_code) begin
+    always @(condition_code, status_register) begin
         case(condition_code)
             `COND_EQ : condition_result <= z;
             `COND_NE : condition_result <= ~z;
