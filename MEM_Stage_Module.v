@@ -3,6 +3,8 @@
 module MEM_Stage_Module(
 	input clk,
 	input rst,
+	input mem_clk,
+	input freeze,
 
 	input mem_read_in,
 	input mem_write_in,
@@ -15,6 +17,7 @@ module MEM_Stage_Module(
 	output [`LEN_REGISTER - 1:0] alu_result_out,
 	output [`LEN_REG_ADDRESS - 1:0] dest_reg_out,
 	output [`LEN_REGISTER - 1:0] memory_data_out,
+	output mem_ready,
 
 	output [`LEN_REGISTER - 1:0] result_out
 );
@@ -25,6 +28,7 @@ module MEM_Stage_Module(
 	// inputs:
 		.clk(clk),
 		.rst(rst),
+		.mem_clk(mem_clk),
 
 		.mem_read_in(mem_read_in),
 		.mem_write_in(mem_write_in),
@@ -32,6 +36,7 @@ module MEM_Stage_Module(
 		.data_in(reg_file_out2_in),
 
 	// outputs:
+		.mem_ready(mem_ready),
 		.data_out(inner_memory_data_out)
 	);
 
@@ -41,6 +46,7 @@ module MEM_Stage_Module(
 	// inputs:
 		.clk(clk),
 		.rst(rst),
+		.freeze(freeze),
 
 		.mem_read_in(mem_read_in),
 		.wb_enable_in(wb_enable_in),

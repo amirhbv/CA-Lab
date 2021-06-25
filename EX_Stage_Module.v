@@ -3,6 +3,7 @@
 module EX_Stage_Module(
 	input clk,
 	input rst,
+	input freeze,
 
 	input [`LEN_ADDRESS - 1:0] pc_in,
 	input [`LEN_STATUS - 1:0] status_reg_in,
@@ -65,6 +66,7 @@ module EX_Stage_Module(
 	// inputs:
 		.clk(clk),
 		.rst(rst),
+		.freeze(freeze),
 
 		.mem_read_in(mem_read_in),
 		.mem_write_in(mem_write_in),

@@ -32,13 +32,13 @@ module Val2Generator(
 		(shift_state == `STATE_LSR_SHIFT) ? op >> immediate_shift_count :
 		(shift_state == `STATE_ASR_SHIFT) ? op >>> immediate_shift_count :
 		(shift_state == `STATE_ROR_SHIFT) ? rotate_right(op , immediate_shift_count) :
-		32'b0;
+		`LEN_ADDRESS'b0;
 
 	wire [`LEN_ADDRESS - 1:0] offset_12 = {shift_operand, 20'b0} >>> 20;
 
 	assign result = (is_mem_command) ? offset_12 :
 		(is_immediate) ? immediate_32_result :
 		(~is_immediate) & (~b4) ? immediate_shift_result :
-		32'b0;
+		`LEN_ADDRESS'b0;
 
 endmodule

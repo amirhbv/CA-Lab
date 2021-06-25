@@ -18,7 +18,7 @@ module ALU(
 		(command == `EXE_ADD) ? op1 + op2 :
 		(command == `EXE_ADC) ? op1 + op2 + cin :
 		(command == `EXE_SUB) ? op1 - op2 :
-		(command == `EXE_SBC) ? op1 - op2 - (cin ? 32'b0 : 32'b1) :
+		(command == `EXE_SBC) ? op1 - op2 - (cin ? `LEN_REGISTER'b0 : `LEN_REGISTER'b1) :
 		(command == `EXE_AND) ? op1 & op2 :
 		(command == `EXE_ORR) ? op1 | op2 :
 		(command == `EXE_EOR) ? op1 ^ op2 :
@@ -26,7 +26,7 @@ module ALU(
 		(command == `EXE_TST) ? op1 & op2 :
 		(command == `EXE_LDR) ? op1 + op2 :
 		(command == `EXE_STR) ? op1 + op2 :
-		32'b0;
+		`LEN_REGISTER'b0;
 
 	wire add_mode = (command == `EXE_ADD) | (command == `EXE_ADC);
 	wire sub_mode = (command == `EXE_SUB) | (command == `EXE_SBC) | (command == `EXE_CMP);

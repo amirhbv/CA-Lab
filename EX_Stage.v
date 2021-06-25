@@ -28,12 +28,12 @@ module EX_Stage(
 	assign alu_first_op = (forw_sel_op1 == `FORW_SEL_FROM_ID) ? reg_file_out1_in :
 						(forw_sel_op1 == `FORW_SEL_FROM_MEM) ? MEM_result :
 						(forw_sel_op1 == `FORW_SEL_FROM_WB) ? WB_result :
-						32'b0;
+						`LEN_REGISTER'b0;
 
 	assign inner_reg_file_out2 = (forw_sel_op2 == `FORW_SEL_FROM_ID) ? reg_file_out2_in :
 						(forw_sel_op2 == `FORW_SEL_FROM_MEM) ? MEM_result :
 						(forw_sel_op2 == `FORW_SEL_FROM_WB) ? WB_result :
-						32'b0;
+						`LEN_REGISTER'b0;
 
 	wire is_mem_command = mem_read_in | mem_write_in;
 

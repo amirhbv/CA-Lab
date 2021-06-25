@@ -1,12 +1,13 @@
 `include "ISA.v"
 
 module ARM(
-  input clk, rst, forwarding_enable
+  input clk, rst, forwarding_enable, mem_clk
 );
 
 	wire flush, is_branch;
     wire[`LEN_ADDRESS - 1:0] branch_address;
 	wire hazard_detected, inner_hazard_detected;
+	wire mem_ready;
 
     wire[`LEN_ADDRESS - 1:0] IF_pc;
     wire[`LEN_INSTRUCTION - 1:0] IF_instruction;
@@ -15,7 +16,7 @@ module ARM(
 		.clk(clk),
 		.rst(rst),
 		.flush(flush),
-		.freeze(hazard_detected),
+		.freeze(hazard_detected | ~mem_ready),
 		.is_branch(is_branch),
 		.branch_address(branch_address),
 
@@ -55,6 +56,7 @@ module ARM(
 		.clk(clk),
 		.rst(rst),
 		.flush(flush),
+		.freeze(~mem_ready),
 		.hazard_detected(hazard_detected),
 
 		.pc_in(IF_pc),
@@ -106,6 +108,7 @@ module ARM(
 	EX_Stage_Module EX_stage_module(
 		.clk(clk),
 		.rst(rst),
+		.freeze(~mem_ready),
 
 		.pc_in(ID_pc),
 		.status_reg_in(ID_status_reg),
@@ -157,6 +160,8 @@ module ARM(
 	MEM_Stage_Module MEM_stage_module(
 		.clk(clk),
 		.rst(rst),
+		.mem_clk(mem_clk),
+		.freeze(~mem_ready),
 
 		.mem_read_in(EX_mem_read),
 		.mem_write_in(EX_mem_write),
@@ -169,6 +174,8 @@ module ARM(
 		.wb_enable_out(MEM_wb_enable),
 		.alu_result_out(MEM_alu_result),
 		.dest_reg_out(MEM_dest_reg),
+
+		.mem_ready(mem_ready),
 		.memory_data_out(MEM_data_out),
 
 		.result_out(MEM_result)

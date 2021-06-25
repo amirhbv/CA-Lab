@@ -11,15 +11,13 @@ module Memory(
 	output [`LEN_REGISTER - 1:0] data_out
 );
 
-	reg [`LEN_REGISTER - 1:0] data [0:63];
+	reg [`LEN_REGISTER - 1:0] data [0:`SIZE_DATA_MEMORY - 1];
 
-	wire[31:0] actual_address = (address_in - 1024) >> 2;
-
-	assign data_out = (mem_read_in == `ENABLE) ? data[actual_address] : 32'b0;
+	assign data_out = (mem_read_in == `ENABLE) ? data[address_in] : `LEN_REGISTER'b0;
 
 	always@(posedge clk) begin
 		if(mem_write_in) begin
-			data[actual_address] <= data_in;
+			data[address_in] <= data_in;
 		end
 	end
 
