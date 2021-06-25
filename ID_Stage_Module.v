@@ -17,6 +17,7 @@ module ID_Stage_Module(
 // outputs from Reg:
 	output [`LEN_ADDRESS - 1:0] pc_out,
 	output [`LEN_STATUS - 1:0] status_reg_out,
+	output [`LEN_REG_ADDRESS - 1:0] reg_file_src1_reg, reg_file_src2_reg,
 	output [`LEN_REGISTER - 1:0] reg_file_out1, reg_file_out2,
 	output [`LEN_SIGNED_IMMEDIATE - 1:0] signed_immediate_out,
 	output [`LEN_SHIFT_OPERAND - 1:0] shift_operand_out,
@@ -85,6 +86,8 @@ module ID_Stage_Module(
 
 		.pc_in(pc_in),
 		.status_reg_in(status_reg_in),
+		.reg_file_src1_in(reg_file_src1),
+		.reg_file_src2_in(reg_file_src2),
 		.reg_file_out1_in(inner_reg_file_out1),
 		.reg_file_out2_in(inner_reg_file_out2),
 		.signed_immediate_in(inner_signed_immediate),
@@ -100,6 +103,8 @@ module ID_Stage_Module(
 
 		.pc_out(pc_out),
 		.status_reg_out(status_reg_out),
+		.reg_file_src1_out(reg_file_src1_reg),
+		.reg_file_src2_out(reg_file_src2_reg),
 		.reg_file_out1_out(reg_file_out1),
 		.reg_file_out2_out(reg_file_out2),
 		.signed_immediate_out(signed_immediate_out),

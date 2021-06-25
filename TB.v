@@ -1,9 +1,9 @@
 `include "ISA.v"
 
 module TB();
-	reg clk = 0, rst;
+	reg clk = 0, rst, forwarding_enable = `ENABLE;
 
-	ARM arm(clk, rst);
+	ARM arm(clk, rst, forwarding_enable);
 
 	always #10 clk = ~clk;
 
@@ -13,7 +13,7 @@ module TB();
 		rst = 1;
 		#19;
 		rst = 0;
-		#900000;
+		#10000;
 		$stop;
 	end
 

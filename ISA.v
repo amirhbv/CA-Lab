@@ -79,3 +79,8 @@
 `define STATE_LSR_SHIFT 2'b01
 `define STATE_ASR_SHIFT 2'b10
 `define STATE_ROR_SHIFT 2'b11
+
+`define LEN_FORW_SEL 2
+`define FORW_SEL_FROM_ID 2'b00
+`define FORW_SEL_FROM_MEM 2'b01
+`define FORW_SEL_FROM_WB 2'b10

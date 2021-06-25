@@ -1,12 +1,12 @@
 `include "ISA.v"
 
 module ARM(
-  input clk, rst
+  input clk, rst, forwarding_enable
 );
 
 	wire flush, is_branch;
     wire[`LEN_ADDRESS - 1:0] branch_address;
-	wire hazard_detected;
+	wire hazard_detected, inner_hazard_detected;
 
     wire[`LEN_ADDRESS - 1:0] IF_pc;
     wire[`LEN_INSTRUCTION - 1:0] IF_instruction;
@@ -33,6 +33,8 @@ module ARM(
     wire[`LEN_ADDRESS - 1:0] ID_pc;
     wire[`LEN_STATUS - 1:0] ID_status_reg;
 
+	wire [`LEN_REG_ADDRESS - 1:0] ID_reg_file_src1_reg;
+	wire [`LEN_REG_ADDRESS - 1:0] ID_reg_file_src2_reg;
 	wire [`LEN_REGISTER - 1:0] ID_reg_file_out1;
 	wire [`LEN_REGISTER - 1:0] ID_reg_file_out2;
 	wire [`LEN_SIGNED_IMMEDIATE - 1:0] ID_signed_immediate;
@@ -66,6 +68,8 @@ module ARM(
 	// outputs from Reg:
 		.pc_out(ID_pc),
 		.status_reg_out(ID_status_reg),
+		.reg_file_src1_reg(ID_reg_file_src1_reg), // Rn address
+		.reg_file_src2_reg(ID_reg_file_src2_reg), // Rm address
 		.reg_file_out1(ID_reg_file_out1), // Rn
 		.reg_file_out2(ID_reg_file_out2), // Rm
 		.signed_immediate_out(ID_signed_immediate),
@@ -96,6 +100,9 @@ module ARM(
 	wire [`LEN_REGISTER - 1:0] EX_alu_result;
 	wire [`LEN_STATUS - 1:0] status_bits;
 
+	wire [`LEN_FORW_SEL - 1:0] forw_sel_op1, forw_sel_op2;
+	wire [`LEN_REGISTER - 1:0] MEM_result;
+
 	EX_Stage_Module EX_stage_module(
 		.clk(clk),
 		.rst(rst),
@@ -110,6 +117,10 @@ module ARM(
 		.execute_command_in(ID_execute_command),
 		.mem_read_in(ID_mem_read),
 		.mem_write_in(ID_mem_write),
+		.forw_sel_op1(forw_sel_op1),
+		.forw_sel_op2(forw_sel_op2),
+		.MEM_result(MEM_result),
+		.WB_result(reg_file_wb_data),
 		.wb_enable_in(ID_wb_enable),
 		.dest_reg_in(ID_dest_reg),
 
@@ -158,7 +169,9 @@ module ARM(
 		.wb_enable_out(MEM_wb_enable),
 		.alu_result_out(MEM_alu_result),
 		.dest_reg_out(MEM_dest_reg),
-		.memory_data_out(MEM_data_out)
+		.memory_data_out(MEM_data_out),
+
+		.result_out(MEM_result)
 	);
 
 	assign reg_file_wb_en = MEM_wb_enable;
@@ -181,7 +194,22 @@ module ARM(
 		.EX_reg_dest(ID_dest_reg),
 		.MEM_reg_dest(EX_dest_reg),
 
-		.hazard_detected(hazard_detected)
+		.hazard_detected(inner_hazard_detected)
+	);
+
+	assign hazard_detected = (forwarding_enable == `ENABLE) ? 0 : inner_hazard_detected;
+
+	ForwardingUnit forwarding_unit(
+		.forwarding_enable(forwarding_enable),
+		.MEM_wb_enable(EX_wb_enable),
+		.WB_wb_enable(MEM_wb_enable),
+		.reg_file_src1(ID_reg_file_src1_reg), // Rn
+		.reg_file_src2(ID_reg_file_src2_reg), // Rm
+		.MEM_reg_dest(EX_dest_reg),
+		.WB_reg_dest(MEM_dest_reg),
+
+		.sel_op1(forw_sel_op1),
+		.sel_op2(forw_sel_op2)
 	);
 
 endmodule

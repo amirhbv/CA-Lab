@@ -13,6 +13,8 @@ module EX_Stage_Module(
 	input [`LEN_EXECUTE_COMMAND - 1:0] execute_command_in,
 	input mem_read_in,
 	input mem_write_in,
+	input [`LEN_FORW_SEL - 1:0] forw_sel_op1, forw_sel_op2,
+	input [`LEN_REGISTER - 1:0] MEM_result, WB_result,
 	input wb_enable_in,
 	input [`LEN_REG_ADDRESS - 1:0] dest_reg_in,
 
@@ -28,7 +30,7 @@ module EX_Stage_Module(
 	output [`LEN_ADDRESS - 1:0] branch_address
 );
 
-	wire [`LEN_REGISTER - 1:0] inner_alu_result;
+	wire [`LEN_REGISTER - 1:0] inner_alu_result, inner_reg_file_out2;
 
     EX_Stage EX_stage(
 	// inputs:
@@ -45,9 +47,14 @@ module EX_Stage_Module(
 		.execute_command_in(execute_command_in),
 		.mem_read_in(mem_read_in),
 		.mem_write_in(mem_write_in),
+		.forw_sel_op1(forw_sel_op1),
+		.forw_sel_op2(forw_sel_op2),
+		.MEM_result(MEM_result),
+		.WB_result(WB_result),
 
 	// outputs to Reg:
 		.alu_result(inner_alu_result),
+		.inner_reg_file_out2(inner_reg_file_out2),
 
 	// outputs:
 		.status_bits(status_bits),
@@ -62,7 +69,7 @@ module EX_Stage_Module(
 		.mem_read_in(mem_read_in),
 		.mem_write_in(mem_write_in),
 		.wb_enable_in(wb_enable_in),
-		.reg_file_out2_in(reg_file_out2_in), // Rm
+		.reg_file_out2_in(inner_reg_file_out2), // Rm
 		.alu_result_in(inner_alu_result),
 		.dest_reg_in(dest_reg_in),
 

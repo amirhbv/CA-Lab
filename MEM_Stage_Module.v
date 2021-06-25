@@ -14,7 +14,9 @@ module MEM_Stage_Module(
 	output wb_enable_out,
 	output [`LEN_REGISTER - 1:0] alu_result_out,
 	output [`LEN_REG_ADDRESS - 1:0] dest_reg_out,
-	output [`LEN_REGISTER - 1:0] memory_data_out
+	output [`LEN_REGISTER - 1:0] memory_data_out,
+
+	output [`LEN_REGISTER - 1:0] result_out
 );
 
 	wire [`LEN_REGISTER - 1:0] inner_memory_data_out;
@@ -32,6 +34,8 @@ module MEM_Stage_Module(
 	// outputs:
 		.data_out(inner_memory_data_out)
 	);
+
+	assign result_out = (mem_read_in) ? inner_memory_data_out : alu_result_in;
 
     MEM_Stage_Reg MEM_stage_reg(
 	// inputs:

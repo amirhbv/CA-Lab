@@ -7,6 +7,7 @@ module ID_Stage_Reg(
 
 	input [`LEN_ADDRESS - 1:0] pc_in,
 	input [`LEN_STATUS - 1:0] status_reg_in,
+	input [`LEN_REG_ADDRESS - 1:0] reg_file_src1_in, reg_file_src2_in,
 	input [`LEN_REGISTER - 1:0] reg_file_out1_in, reg_file_out2_in,
 	input [`LEN_SIGNED_IMMEDIATE - 1:0] signed_immediate_in,
 	input [`LEN_SHIFT_OPERAND - 1:0] shift_operand_in,
@@ -21,6 +22,7 @@ module ID_Stage_Reg(
 
 	output [`LEN_ADDRESS - 1:0] pc_out,
 	output [`LEN_STATUS - 1:0] status_reg_out,
+	output [`LEN_REG_ADDRESS - 1:0] reg_file_src1_out, reg_file_src2_out,
 	output [`LEN_REGISTER - 1:0] reg_file_out1_out, reg_file_out2_out,
 	output [`LEN_SIGNED_IMMEDIATE - 1:0] signed_immediate_out,
 	output [`LEN_SHIFT_OPERAND - 1:0] shift_operand_out,
@@ -46,6 +48,20 @@ module ID_Stage_Reg(
 		.in(status_reg_in),
 
 		.out(status_reg_out)
+	);
+
+	RegisterFlush #(.WORD_LENGTH(`LEN_REG_ADDRESS)) reg_file_src1_reg(
+		.clk(clk), .rst(rst), .flush(flush), .ld(1'b1),
+		.in(reg_file_src1_in),
+
+		.out(reg_file_src1_out)
+	);
+
+	RegisterFlush #(.WORD_LENGTH(`LEN_REG_ADDRESS)) reg_file_src2_reg(
+		.clk(clk), .rst(rst), .flush(flush), .ld(1'b1),
+		.in(reg_file_src2_in),
+
+		.out(reg_file_src2_out)
 	);
 
 	RegisterFlush #(.WORD_LENGTH(`LEN_REGISTER)) reg_file_out1_reg(
