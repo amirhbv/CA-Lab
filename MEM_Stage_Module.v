@@ -28,7 +28,7 @@ module MEM_Stage_Module(
 
 		.mem_read_in(mem_read_in),
 		.mem_write_in(mem_write_in),
-		.alu_result_in(alu_result_in),
+		.address_in(alu_result_in),
 		.data_in(reg_file_out2_in),
 
 	// outputs:
